@@ -2,19 +2,22 @@ from irani_dataset_list import *
 from auto_data import *
 import pandas as pd
 import argparse
+import random
 
 parser = argparse.ArgumentParser(description="Generate Random Data with Custom Columns")
-parser.add_argument('--columns', nargs='+', choices=['First Name', 'Last Name FA', 'Last Name EN', 'Occupation', 'Email', 'Travel Date', 'Travel Time', 'Country', 'Airline', 'Cities', 'Vehicel', "Vehicel Color", "Vehicel Plate", 'Gender', 'Martial', 'Payment Status', 'Salary', "City_y", "City_x", "Instagram Id", "Telegram Id", "Postal Code", "Telephone", "Phone Number"], required=True, help="Select columns to include in the generated data")
+parser.add_argument('--columns', nargs='+', choices=['First Name', 'Last Name FA', 'Last Name EN', 'Job', 'Email', 'Travel Date', 'Travel Time', 'Country', 'Airline', 'Cities', 'Vehicel', "Vehicel Color", "Vehicel Plate", 'Gender', 'Martial', 'Payment Status', 'Salary', "City_y", "City_x", "Instagram Id", "Telegram Id", "Postal Code", "Telephone", "Phone Number", "Price"], required=True, help="Select columns to include in the generated data")
 args = parser.parse_args()
 
 class GenerateData:
     def generate_data(self):
         data = []
         file_name = input("file name without .csv: ")
-        for _ in range(1000):  # تولید 10 ردیف از داده‌ها
+        lengh = int(input("How much data should I create? "))
+
+        for _ in range(lengh):
             farsi_name = random.choice(range(len(fname)))
             farsi_lname = random.choice(range(len(lname)))
-            occupation = random.choice(Occupation)
+            job = random.choice(jobs)
             travel_date = generate_random_jalali_date(1360, 1403)
             travel_time = generate_random_time()
             natinalid = natinal_id()
@@ -24,78 +27,52 @@ class GenerateData:
             cities_list = random.choice(cities)
             vehicles_list = random.choice(vehicles)
             gender_list = random.choice(gender)
-            Marital_list = random.choice(Marital)
+            marital_list = random.choice(Marital)
             payment_status_list = random.choice(payment_status)
             salary_list = random.choice(salary)
             city_y = random.choice(cities)
             city_x = random.choice(cities)
             vehic_color = random.choice(vehicle_color)
-            # vehicel_plate = generate_random_plate()
-            # insta_id = instagram_id()
-            # tel_id = telegram_id()
-            # postal_code = Postal_Code()
-            # telephone_num = telephone
-            
-            
-            row = []
+            prices = random.choice(price)
 
-            if 'First Name' in args.columns:
-                row.append(fname[farsi_name])
-            if 'Last Name FA' in args.columns:
-                row.append(lname[farsi_lname])
-            if 'Last Name EN' in args.columns:
-                row.append(english_lname[farsi_lname])
-            if 'Occupation' in args.columns:
-                row.append(occupation)
-            if 'Email' in args.columns:
-                row.append(email_list)
-            if 'Travel Date' in args.columns:
-                row.append(travel_date)
-            if 'Travel Time' in args.columns:
-                row.append(travel_time)
-            if "Natinal ID" in args.columns:
-                row.append(natinalid)
-            if "Country" in args.columns:
-                row.append(country_list)
-            if "Airline" in args.columns:
-                row.append(airlines_list)
-            if "Cities" in args.columns:
-                row.append(cities_list)
-            if "Vehicel" in args.columns:
-                row.append(vehicles_list)
-            if "Gender" in args.columns:
-                row.append(gender_list)
-            if "Martial" in args.columns:
-                row.append(Marital_list)
-            if "Payment Status" in args.columns:
-                row.append(payment_status_list)
-            if "Salary" in args.columns:
-                row.append(salary_list)
-            if "City_y" in args.columns:
-                row.append(city_y)             
-            if "City_x" in args.columns:
-                row.append(city_x)             
-            if "Vehicel Color" in args.columns:
-                row.append(vehic_color)             
-            if "Vehicel Plate" in args.columns:
-                row.append(generate_random_plate())  
+            # Dictionary to map each column to its respective data
+            column_data = {
+                'First Name': fname[farsi_name],
+                'Last Name FA': lname[farsi_lname],
+                'Last Name EN': english_lname[farsi_lname],
+                'Job': job,
+                'Email': email_list,
+                'Travel Date': travel_date,
+                'Travel Time': travel_time,
+                'Natinal ID': natinalid,
+                'Country': country_list,
+                'Airline': airlines_list,
+                'Cities': cities_list,
+                'Vehicel': vehicles_list,
+                'Vehicel Color': vehic_color,
+                'Vehicel Plate': generate_random_plate(),
+                'Gender': gender_list,
+                'Martial': marital_list,
+                'Payment Status': payment_status_list,
+                'Salary': salary_list,
+                'City_y': city_y,
+                'City_x': city_x,
+                'Telegram Id': telegram_id(farsi_name, farsi_lname),
+                'Instagram Id': instagram_id(farsi_name, farsi_lname),
+                'Postal Code': Postal_Code(),
+                'Telephone': telephone(),
+                'Phone Number': phone_number(),
+                "Price": prices
+            }
 
-            if "Telegram Id" in args.columns:
-                row.append(telegram_id(farsi_name, farsi_lname))
-            if "Instagram Id" in args.columns:
-                row.append(instagram_id(farsi_name, farsi_lname))       
-            if "Postal Code" in args.columns:
-                row.append(Postal_Code())
-            if "Telephone" in args.columns:
-                row.append(telephone())
-            if "Phone Number" in args.columns:
-                row.append(phone_number())
+            # Generate a row based on the columns selected
+            row = [column_data[col] for col in args.columns]
 
             data.append(row)
 
         df = pd.DataFrame(data, columns=args.columns)
 
         df.to_csv(f"{file_name}.csv", index=False, encoding='utf-8-sig')
-        
-        
+
+
 GenerateData().generate_data()
